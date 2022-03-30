@@ -1,0 +1,663 @@
+<nav
+  class="navbar navbar-light bg-primary"
+  style="border-bottom: 4px solid #0000; background-color: #efeeec !important"
+>
+  <div class="container-fluid">
+    <a href="#" class="navbar-brand">
+      <img
+        src="/assets/logo.png"
+        width="130"
+        height="160"
+        alt=""
+        class="d-inline-block align-middle mr-2"
+      />
+      <span class="text-uppercase font-weight-bold mx-4">Cartão Consumo</span>
+    </a>
+    <div class="d-flex">
+      <button
+        title="Adicionar Movimentação"
+        class="btn btn-success mx-4"
+        *ngIf="isAdmin === '3'"
+        data-bs-toggle="modal"
+        data-bs-target="#insertMovCN"
+      >
+        <i class="fa-solid fa-circle-plus"></i>
+      </button>
+      <button
+        title="Pesquisar"
+        (click)="obterConsulByNrOrName(consumId)"
+        class="btn btn-warning mx-2"
+      >
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+      <input
+        type="text"
+        style="width: 500px"
+        (keyup.enter)="obterConsulByNrOrName(consumId)"
+        name="search"
+        (keyup)="consumId = $any($event.target).value; getTxtValue()"
+      />
+      <button
+        title="Adicionar novo cartão"
+        class="btn btn-light mx-4"
+        *ngIf="isAdmin === '1'"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
+        <i class="fa-solid fa-circle-plus"></i>
+      </button>
+      <button title="Sair" class="btn btn-danger mx-4" (click)="Sair()">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<table class="table mt-3">
+  <thead>
+    <tr>
+      <th scope="col" style="display: none">cartaoConsumoId</th>
+      <th scope="col">Número</th>
+      <th scope="col">Nome</th>
+      <th scope="col">CPF</th>
+      <th scope="col">Descrição</th>
+      <th scope="col">Validade</th>
+      <th scope="col">Desconto</th>
+      <th scope="col">Saldo Atual</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let consum of consumo.results; let i = index">
+      <td style="display: none" #Id>{{ consum.cartaoConsumoId }}</td>
+      <td>{{ consum.numero }}</td>
+      <td>{{ consum.nome }}</td>
+      <td>{{ consum.cpf }}</td>
+      <td>{{ consum.descricao }}</td>
+      <td>{{ consum.validade }}</td>
+      <td>{{ consum.desconto }}%</td>
+      <td>{{ converterCurrency(consum.saldoAtual) }}</td>
+
+      <td>
+        <button
+          title="Detalhes"
+          class="btn btn-dark"
+          *ngIf="isAdmin === '1'"
+          (click)="obterConsulByNr(consum.numero)"
+        >
+          <i class="fa-solid fa-circle-info"></i>
+        </button>
+        <button
+          title="Adicionar Movimentação"
+          class="btn btn-dark mx-2"
+          *ngIf="isAdmin === '3'"
+          (click)="catchIndex(i); catchId(Id.innerText)"
+          data-bs-toggle="modal"
+          data-bs-target="#insertMovC"
+        >
+          <i class="fa-solid fa-circle-plus"></i>
+        </button>
+        <button
+          title="Deletar Cartão"
+          class="btn btn-danger mx-3"
+          *ngIf="isAdmin === '1'"
+          (click)="deleteById(consum.cartaoConsumoId)"
+        >
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Inserir Novo Cartão</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Nome</label>
+            <input
+              type="text"
+              #Nome
+              placeholder="Ex: José Carlos Macoratti"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Número</label>
+            <input
+              type="text"
+              #numero
+              placeholder="Ex: 0000000000000000"
+              class="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">CPF</label>
+            <input
+              type="text"
+              #Cpf
+              placeholder="Ex: 000.000.000-00"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Descrição</label
+            >
+            <input
+              type="text"
+              #desc
+              placeholder="Ex: VISA"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Validade</label
+            >
+            <input
+              type="text"
+              #validade
+              placeholder="Ex: 00/0000"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Porcentagem de Desconto</label
+            >
+            <input
+              type="number"
+              #Desconto
+              placeholder="Ex: 0"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Número do Restaurante</label
+            >
+            <input
+              type="number"
+              #restauranteId
+              value="{{ resNro }}"
+              class="form-control"
+              id="exampleInputPassword1"
+              disabled
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button
+          type="button"
+          (click)="
+            getTxtInfo(
+              numero,
+              desc,
+              validade,
+              Cpf,
+              Desconto,
+              Nome,
+              restauranteId
+            )
+          "
+          class="btn btn-primary"
+        >
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="insertCaixa"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Inserir Novo Cartão</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Nome</label>
+            <input
+              type="text"
+              #NomeC
+              placeholder="Ex: José Carlos Macoratti"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Número</label>
+            <input
+              type="text"
+              #numeroC
+              placeholder="Ex: 0000000000000000"
+              class="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">CPF</label>
+            <input
+              type="text"
+              #CpfC
+              placeholder="Ex: 000.000.000-00"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Descrição</label
+            >
+            <input
+              type="text"
+              #descC
+              placeholder="Ex: VISA"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Saldo Inicial</label
+            >
+            <input
+              type="number"
+              #valorC
+              value="00.00"
+              class="form-control"
+              id="exampleInputPassword1"
+              disabled
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Validade</label
+            >
+            <input
+              type="text"
+              #validadeC
+              placeholder="Ex: 00/0000"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Porcentagem de Desconto</label
+            >
+            <input
+              type="number"
+              #DescontoC
+              placeholder="Ex: 0"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Número do Restaurante</label
+            >
+            <input
+              type="number"
+              #restauranteIdC
+              value="{{ resNro }}"
+              class="form-control"
+              id="exampleInputPassword1"
+              disabled
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button
+          type="button"
+          (click)="
+            getTxtInfo(
+              numeroC,
+              descC,
+              validadeC,
+              CpfC,
+              DescontoC,
+              NomeC,
+              restauranteIdC
+            )
+          "
+          class="btn btn-primary"
+        >
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="insertMovC"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Inserir Carga</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Valor</label>
+            <input
+              type="number"
+              min="0"
+              #saldoC
+              class="form-control"
+              placeholder="Ex: 00.00"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label
+              for="exampleInputPassword1"
+              style="visibility: hidden"
+              class="form-label"
+              >Tipo</label
+            >
+            <select
+              class="form-control"
+              style="visibility: hidden"
+              name="tipoC"
+              #tipoC
+              id="tipo"
+            >
+              <option value="1">Positivo</option>
+              <option disabled value="2">Negativo</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button
+          type="button"
+          (click)="getTxtInfoMov(saldoC.value, tipoC.value)"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#gerarComprovante"
+        >
+          Lançar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="gerarComprovante"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Carga Confirmada,</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <h6 class="modal-text" id="exampleModalLabel">
+          Deseja gerar um comprovante?
+        </h6>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="reloading()"
+          data-bs-dismiss="modal"
+        >
+          Não
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#comprovante"
+        >
+          Sim
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="comprovante"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Comprovante de Recarga
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div id="imp" #imp class="modal-body">
+        <img
+          src="/assets/logo.png"
+          width="200"
+          height="200"
+          alt=""
+          class="d-inline-block align-middle mr-2"
+        />
+
+        <table class="table mt-3">
+          <tr>
+            <td>Nome:</td>
+            <td>{{ this.consumo.nome }}</td>
+          </tr>
+          <tr>
+            <td>Nº:</td>
+            <td>{{ this.consumo.numero }}</td>
+          </tr>
+          <tr>
+            <td>Data da transação:</td>
+            <td>{{ converterLongDate(dataMovAtual) }}</td>
+          </tr>
+          <tr>
+            <td>Valor da Movimentação:</td>
+            <td>+{{ converterCurrency(valorMovAtual) }}</td>
+          </tr>
+          <tr>
+            <td>Saldo Atual:</td>
+            <td>{{ converterCurrency(soma) }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="reloading()"
+          data-bs-dismiss="modal"
+        >
+          Fechar
+        </button>
+        <button
+          title="Imprimir"
+          class="btn btn-primary mx-2"
+          (click)="printThisPage()"
+        >
+          <i class="fas fa-print"></i>
+        </button>
+        <button type="button" class="btn btn-primary" (click)="makePdf()">
+          Gerar em PDF
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="insertMovCN"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Inserir Carga</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Nº do Cartão</label
+            >
+            <input
+              type="text"
+              (keyup)="consumId = $any($event.target).value; getTxtValue()"
+              min="0"
+              #nroCN
+              class="form-control"
+              placeholder="Ex: 0000000"
+              id="exampleInputPassword1"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Valor</label>
+            <input
+              type="number"
+              min="0"
+              #saldoCN
+              class="form-control"
+              placeholder="Ex: 00.00"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label
+              for="exampleInputPassword1"
+              style="visibility: hidden"
+              class="form-label"
+              >Tipo</label
+            >
+            <select
+              class="form-control"
+              style="visibility: hidden"
+              name="tipoC"
+              #tipoCN
+              id="tipo"
+            >
+              <option value="1">Positivo</option>
+              <option disabled value="2">Negativo</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button
+          type="button"
+          (click)="getTxtInfoMovWithNro(saldoCN.value, tipoCN.value)"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#gerarComprovante"
+        >
+          Carregar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="bg-light text-center text-lg-start">
+  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+    © 2022 Powered by:
+    <a class="text-dark" href="https://www.zipsoftware.com.br/">ZiP Software</a>
+  </div>
+</footer>

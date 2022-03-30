@@ -3,7 +3,13 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  apiurl: 'http://localhost:56435/',
+  resId: 66,
+  production: false,
+  login: 'admin',
+  senha: 'zip-super',
+  loginC: 'caixa',
+  senhaC: 'zip-super',
 };
 
 /*

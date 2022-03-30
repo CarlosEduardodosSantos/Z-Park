@@ -1,0 +1,117 @@
+<nav
+  class="navbar navbar-light bg-primary"
+  style="border-bottom: 4px solid #0000; background-color: #efeeec !important"
+>
+  <div class="container-fluid">
+    <a href="#" class="navbar-brand">
+      <img
+        src="/assets/logo.png"
+        width="130"
+        height="160"
+        alt=""
+        class="d-inline-block align-middle mr-2"
+      />
+      <span class="text-uppercase font-weight-bold mx-4">Cartão Consumo</span>
+    </a>
+    <div class="d-flex">
+      <button
+        class="btn btn-dark"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
+        <i class="fa-solid fa-circle-user"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Área de Gestão</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Login</label>
+            <input
+              type="text"
+              #login
+              class="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Senha</label>
+            <input
+              type="password"
+              #senha
+              class="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button
+          type="button"
+          (click)="goToAdmin(login.value, senha.value)"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+        >
+          Entrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" id="cartao" style="margin: 0 auto; width: 300px">
+  <div class="card-header">
+    <h4>Consultar Histórico</h4>
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">Nº Cartão</h5>
+    <input
+      type="text"
+      (keyup.enter)="obterConsulByNr(numero.value)"
+      style="margin-top: 10px"
+      #numero
+      class="form-control"
+      id="exampleInputEmail1"
+      aria-describedby="emailHelp"
+    />
+    <button
+      class="btn btn-warning"
+      style="margin-top: 30px; margin-left: 80px"
+      (click)="obterConsulByNr(numero.value)"
+    >
+      Consultar
+    </button>
+  </div>
+</div>
+
+<footer class="bg-light text-center text-lg-start">
+  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+    © 2022 Powered by:
+    <a class="text-dark" href="https://www.zipsoftware.com.br/">ZiP Software</a>
+  </div>
+</footer>
