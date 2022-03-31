@@ -26,11 +26,21 @@
         (change)="searchByDate(dataInicial.value)"
       />
       <button
-        title="Novo Plano Alimentação"
+        title="Novo Veículo"
         class="btn btn-dark mx-2"
         (click)="gotoCadastro()"
       >
         <i class="fa-solid fa-circle-plus"></i>
+      </button>
+      <button
+        title="Imprimir"
+        class="btn btn-light mx-2"
+        (click)="printThisPage()"
+      >
+        <i class="fas fa-print"></i>
+      </button>
+      <button title="Sair" class="btn btn-danger mx-2" (click)="logout()">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
       </button>
     </div>
   </div>

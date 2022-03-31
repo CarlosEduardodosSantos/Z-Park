@@ -100,15 +100,27 @@ export class AdmComponent implements OnInit {
   }
 
   async fecharCaixa(data: any) {
-    for (let i = 0; i < this.estacionamento.results.length; i++) {
-      this.cx1Model = {
-        dataFx: this.dataagora,
-        nroEs: this.estacionamento.results[i].nro,
-      };
-      console.log(this.cx1Model);
-      await this.est.updateCx1Es(this.cx1Model);
+    if (confirm('Tem certeza que deseja fechar o caixa?')) {
+      for (let i = 0; i < this.estacionamento.results.length; i++) {
+        this.cx1Model = {
+          dataFx: this.dataagora,
+          nroEs: this.estacionamento.results[i].nro,
+        };
+        console.log(this.cx1Model);
+        await this.est.updateCx1Es(this.cx1Model);
+      }
+      this.estModel = { dataReg: data, fechado: true };
+      await this.est.updateByDate(this.estModel);
+      location.reload();
     }
-    this.estModel = { dataReg: data, fechado: true };
-    await this.est.updateByDate(this.estModel);
+  }
+
+  logout() {
+    localStorage.setItem('admin', '2');
+    this.router.navigate(['/login']);
+  }
+
+  printThisPage() {
+    window.print();
   }
 }

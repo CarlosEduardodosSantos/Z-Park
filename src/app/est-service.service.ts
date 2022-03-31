@@ -5,6 +5,9 @@ import { iEst } from './iEst';
 import { iRes } from './iRes';
 import { iCx1 } from './iCx1';
 import { iCx2 } from './iCx2';
+import { iMovXandao } from './iMovXandao';
+import { iResp } from './iResp';
+import { map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +16,15 @@ export class EstServiceService {
   public isAdmin: any;
   constructor(private HttpClient: HttpClient) {}
 
+  //insert mov
+  public insertMov(mov: iMovXandao) {
+    return this.HttpClient.post<iMovXandao>(
+      `${environment.apiurl}api/CartaoConsumo/adicionarMov`,
+      mov
+    ).toPromise();
+  }
+
+  //rest id
   public obterResById() {
     return this.HttpClient.get<iRes>(
       `${environment.apiurl}api/Restaurante/getById/${environment.resId}`

@@ -11,6 +11,9 @@ import { environment } from 'src/environments/environment';
 import { iCx1 } from '../iCx1';
 import { iCx2 } from '../iCx2';
 import jsPDF from 'jspdf';
+import { Printd } from 'printd';
+import { iMovXandao } from '../iMovXandao';
+import { iResp } from '../iResp';
 
 @Component({
   selector: 'app-cadastro',
@@ -24,12 +27,16 @@ export class CadastroComponent implements OnInit {
   estModel: iEst = new iEst();
   cx1Model: iCx1 = new iCx1();
   cx2Model: iCx2 = new iCx2();
+  iMovModel: iMovXandao = new iMovXandao();
+  respModel: iResp = new iResp();
   restaurante: any;
   valorDiaria: any;
   diarias: any = 0;
   valorTotal: any = 0;
   tipoMov: any;
   especie: any;
+  isConsumo: any;
+  resp: any;
 
   async ngOnInit() {
     await this.est.obterResById().then((res) => {
@@ -40,12 +47,20 @@ export class CadastroComponent implements OnInit {
     console.log(this.restaurante.valorEst);
   }
 
-  printThisPage() {
+  checkConsumo(valor: any) {
+    if (valor == 4) {
+      this.isConsumo = true;
+    } else {
+      this.isConsumo = false;
+    }
+  }
+
+  async printThisPage() {
     let pdf = new jsPDF('p', 'pt', 'a4');
-    pdf.html(this.el.nativeElement, {
+    await pdf.html(this.el.nativeElement, {
       callback: (pdf) => {
         pdf.autoPrint();
-        pdf.output('dataurlnewwindow');
+        window.open(pdf.output('bloburl'), '_blank');
       },
     });
   }
@@ -67,7 +82,8 @@ export class CadastroComponent implements OnInit {
     _entrada: any,
     _saida: any,
     _valorTotal: any,
-    _metodo: any
+    _metodo: any,
+    nroCartao?: any
   ) {
     if (_empresa == '' || _apto == '' || _placa == '' || _modelo == '') {
       window.alert('Por favor insira todas as informações');
@@ -88,6 +104,42 @@ export class CadastroComponent implements OnInit {
         valorTotal: _valorTotal,
         metodo: _metodo,
       };
+    }
+
+    if (_metodo == 4) {
+      if (nroCartao !== '') {
+        this.iMovModel = {
+          restauranteId: environment.resId,
+          numeroCartao: nroCartao,
+          valor: _valorTotal,
+          tipoMov: 2,
+        };
+        await this.est.insertMov(this.iMovModel).then((resp) => {
+          this.resp = resp;
+          console.log(this.resp);
+
+          if (this.resp.aproved == true) {
+            this.estModel = {
+              empresa: _empresa,
+              apto: _apto,
+              placa: _placa,
+              modelo: _modelo,
+              entrada: _entrada,
+              saida: _saida,
+              valorTotal: this.resp.valor,
+              metodo: _metodo,
+            };
+            this.est
+              .insert(this.estModel)
+              .then(() => console.log(this.estModel));
+          } else {
+            return window.alert(this.resp.mensage);
+          }
+        });
+      } else {
+        return window.alert('Digite o número do cartão!');
+      }
+    } else {
       this.est.insert(this.estModel).then(() => console.log(this.estModel));
     }
   }
@@ -98,7 +150,7 @@ export class CadastroComponent implements OnInit {
       this.est.isAdmin = localStorage.getItem('admin');
       console.log(this.est.isAdmin);
       this.router.navigate(['/adm']);
-    } else if (login == environment.loginC && senha == environment.senhaC) {
+    } else if (login == environment.loginc && senha == environment.senhac) {
       localStorage.setItem('admin', '3');
       this.est.isAdmin = localStorage.getItem('admin');
       this.router.navigate(['/adm']);
@@ -107,5 +159,10 @@ export class CadastroComponent implements OnInit {
       this.est.isAdmin = localStorage.getItem('admin');
       alert('Credenciais Incorretas!');
     }
+  }
+
+  logout() {
+    localStorage.setItem('admin', '2');
+    this.router.navigate(['/login']);
   }
 }
