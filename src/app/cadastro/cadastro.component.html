@@ -1,0 +1,407 @@
+<nav
+  class="navbar navbar-light bg-primary"
+  style="border-bottom: 4px solid #0000; background-color: #efeeec !important"
+>
+  <div class="container-fluid">
+    <a href="#" class="navbar-brand">
+      <img
+        src="/assets/logo.png"
+        width="130"
+        height="160"
+        alt=""
+        class="d-inline-block align-middle mr-2"
+      />
+      <span class="text-uppercase font-weight-bold mx-4">Cadastro</span>
+    </a>
+    <div class="d-flex">
+      <button
+        class="btn btn-dark"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
+        <i class="fa-solid fa-circle-user"></i>
+      </button>
+      <button title="Sair" class="btn btn-danger mx-2" (click)="logout()">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div
+  class="card"
+  style="margin: 0 auto; width: 500px; margin-top: 30px; margin-bottom: 30px"
+>
+  <div class="card-header">
+    <h4>Cadastrar Cliente</h4>
+  </div>
+  <div class="card-body">
+    <form>
+      <div class="row">
+        <div class="col">
+          <label for="exampleInputEmail1">Hotel</label>
+          <input
+            type="text"
+            class="form-control"
+            #hotel
+            id="exampleInputEmail1"
+            aria-describedby="emailHelp"
+            placeholder="Ex: Golden Dolphin"
+          />
+        </div>
+        <div class="col">
+          <label for="exampleInputEmail1">Vl Diária</label>
+          <input
+            value="{{ valorDiariaConvert }}"
+            type="text"
+            class="form-control"
+            #vldiaria
+            id="exampleInputEmail2"
+            aria-describedby="emailHelp"
+            disabled
+          />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Nº Apartamento</label>
+        <input
+          type="number"
+          class="form-control"
+          #apto
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+          placeholder="Ex: 30"
+        />
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Nº Placa</label>
+        <input
+          type="text"
+          class="form-control"
+          #placa
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+          placeholder="Ex: RIO2A18"
+        />
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Modelo</label>
+        <input
+          type="text"
+          class="form-control"
+          #modelo
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+          placeholder="Ex: GOL"
+        />
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Entrada</label>
+        <input
+          (change)="dateDiff(checkin.value, checkout.value)"
+          type="date"
+          class="form-control"
+          #checkin
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+          placeholder="Ex: 10"
+        />
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Saída</label>
+        <input
+          (change)="dateDiff(checkin.value, checkout.value)"
+          type="date"
+          class="form-control"
+          #checkout
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+          placeholder="Ex: 10"
+        />
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Diárias</label>
+        <input
+          value="{{ diarias }}"
+          type="number"
+          class="form-control"
+          #a
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+          disabled
+        />
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Valor Total</label>
+        <input
+          value="{{ valorConvert }}"
+          type="text"
+          class="form-control"
+          #total
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+          disabled
+        />
+      </div>
+      <br />
+    </form>
+    <button
+      class="btn btn-warning"
+      style="margin-top: 20px; margin-left: 175px"
+      data-bs-toggle="modal"
+      data-bs-target="#pgmt"
+    >
+      Cadastrar
+    </button>
+  </div>
+</div>
+<div><br /></div>
+
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Área de Gestão</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Login</label>
+            <input
+              type="text"
+              #login
+              class="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Senha</label>
+            <input
+              type="password"
+              #senha
+              class="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button
+          type="button"
+          (click)="goToAdmin(login.value, senha.value)"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+        >
+          Entrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="pgmt"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Forma de Pagamento</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label *ngIf="isConsumo === true" for="exampleInputEmail1"
+            >N° Cartão</label
+          >
+          <input
+            [hidden]="!isConsumo"
+            type="text"
+            class="form-control"
+            #cartao
+            id="cartao"
+            aria-describedby="emailHelp"
+            placeholder="Ex: 12345"
+          />
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Método</label>
+          <select
+            (change)="checkConsumo(metodo.value)"
+            #metodo
+            class="form-select"
+            aria-label="Modo de pagamento"
+          >
+            <option value="1" selected>Dinheiro</option>
+            <option value="2">Cartão Débito</option>
+            <option value="3">Cartão Crédito</option>
+            <option value="4">Cartão Consumo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#gerarComprovante"
+          (click)="
+            insertEst(
+              hotel.value,
+              apto.value,
+              placa.value,
+              modelo.value,
+              checkin.value,
+              checkout.value,
+              valorTotal,
+              metodo.value,
+              cartao.value
+            )
+          "
+        >
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="gerarComprovante"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{mensagem1}}</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <h6 class="modal-text" id="exampleModalLabel">
+          {{mensagem2}}
+        </h6>
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="reload()" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          {{botao}}
+        </button>
+        <button 
+        *ngIf="this.botaoLiberado" class="ng-hide"
+          type="button"
+          
+          data-bs-toggle="modal"
+          data-bs-target="#comprovante"
+        >
+          Sim
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="comprovante"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Comprovante de Pagamento
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div id="imp" #imp class="modal-body">
+        <img
+          src="/assets/logo.png"
+          width="200"
+          height="200"
+          alt=""
+          class="d-inline-block align-middle mr-2"
+        />
+
+        <table class="table mt-3">
+          <tr>
+            <td>Placa:</td>
+            <td>{{ this.estModel.placa }}</td>
+          </tr>
+          <tr>
+            <td>Modelo:</td>
+            <td>{{ this.estModel.placa }}</td>
+          </tr>
+          <tr>
+            <td>Entrada:</td>
+            <td>{{ converterLongDate(this.estModel.entrada) }}</td>
+          </tr>
+          <tr>
+            <td>Saida:</td>
+            <td>{{ converterLongDate(this.estModel.saida) }}</td>
+          </tr>
+          <tr>
+            <td>Valor:</td>
+            <td>{{ converterCurrency(this.estModel.valorTotal) }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button (click)="reload()" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button
+
+          title="Imprimir"
+          class="btn btn-primary mx-2"
+          (click)="printThisPage()"
+        >
+          <i class="fas fa-print"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  background: grey;
+}
+#navzao {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 2;
+}
+#tabelas {
+  position: absolute;
+  top: 25%;
+}

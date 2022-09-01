@@ -1,0 +1,62 @@
+<nav
+  class="navbar navbar-light bg-primary"
+  style="border-bottom: 4px solid #0000; background-color: #efeeec !important"
+>
+  <div class="container-fluid">
+    <a href="#" class="navbar-brand">
+      <img
+        src="/assets/logo.png"
+        width="130"
+        height="160"
+        alt=""
+        class="d-inline-block align-middle mr-2"
+      />
+      <span class="text-uppercase font-weight-bold mx-4">Z-Park Login</span>
+    </a>
+    <div class="d-flex"></div>
+  </div>
+</nav>
+
+<div class="card" id="cartao" style="margin: 0 auto; width: 300px">
+  <div class="card-header">
+    <h4>Acesso</h4>
+  </div>
+  <div class="card-body">
+    <form>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Login</label>
+        <input
+          type="text"
+          class="form-control"
+          #login
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+        />
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Senha</label>
+        <input
+          type="password"
+          class="form-control"
+          #senha
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+        />
+      </div>
+    </form>
+    <button
+      class="btn btn-warning"
+      style="margin-top: 30px; margin-left: 100px"
+      (click)="goToAdmin(login.value, senha.value)"
+    >
+      Login
+    </button>
+  </div>
+</div>
+
+<footer class="bg-light text-center text-lg-start">
+  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+    © 2022 Powered by:
+    <a class="text-dark" href="https://www.zipsoftware.com.br/">ZiP Software</a>
+  </div>
+</footer>

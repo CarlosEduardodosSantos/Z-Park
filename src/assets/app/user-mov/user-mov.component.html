@@ -1,0 +1,610 @@
+<div id="navzao">
+  <nav
+    class="navbar navbar-light bg-primary"
+    style="border-bottom: 4px solid #0000; background-color: #efeeec !important"
+  >
+    <div class="container-fluid">
+      <a href="#" class="navbar-brand">
+        <img
+          src="/assets/logo.png"
+          width="130"
+          height="160"
+          alt=""
+          class="d-inline-block align-middle mr-2"
+        />
+        <span class="text-uppercase font-weight-bold mx-4">Cartão Consumo</span>
+      </a>
+      <div class="d-flex">
+        <button
+          title="Imprimir"
+          class="btn btn-light mx-2"
+          (click)="printThisPage()"
+        >
+          <i class="fas fa-print"></i>
+        </button>
+        <button
+          title="Editar Registro de Cartão"
+          class="btn btn-light mx-2"
+          *ngIf="isAdmin === '1'"
+          data-bs-toggle="modal"
+          data-bs-target="#editModal"
+        >
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+        <button
+          class="btn btn-light mx-2"
+          *ngIf="isAdmin === '3'"
+          data-bs-toggle="modal"
+          data-bs-target="#editModalC"
+        >
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+        <button
+          title="Voltar"
+          class="btn btn-light mx-2"
+          *ngIf="isAdmin === '1' || isAdmin === '3'"
+          (click)="voltarLogin()"
+        >
+          <i class="fa-solid fa-circle-arrow-left"></i>
+        </button>
+        <button title="Sair" class="btn btn-danger mx-2" (click)="Sair()">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+</div>
+<div id="tabelas">
+  <table
+    id="tabela1"
+    class="table table-striped"
+    style="
+      margin: 50px;
+      width: 90vw;
+      border: 4px solid black;
+      border-radius: 5px;
+    "
+  >
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">{{ restaurante.nome }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Número:</b></td>
+        <td>{{ consumo.numero }}</td>
+      </tr>
+      <tr>
+        <td><b>Nome:</b></td>
+        <td>{{ consumo.nome }}</td>
+      </tr>
+      <tr>
+        <td><b>CPF:</b></td>
+        <td>{{ consumo.cpf }}</td>
+      </tr>
+      <tr>
+        <td><b>Descricao:</b></td>
+        <td>{{ consumo.descricao }}</td>
+      </tr>
+      <tr>
+        <td><b>Saldo:</b></td>
+        <td>{{ converterCurrency(consumo.saldoAtual) }}</td>
+      </tr>
+      <tr>
+        <td><b>Validade:</b></td>
+        <td>{{ consumo.validade }}</td>
+      </tr>
+      <tr>
+        <td><b>Desconto:</b></td>
+        <td>{{ consumo.desconto }}%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table
+    id="tabela2"
+    class="table table-striped"
+    style="
+      margin: 50px;
+      width: 90vw;
+      border: 4px solid black;
+      border-radius: 5px;
+    "
+  >
+    <thead>
+      <tr>
+        <th scope="col">Movimentações</th>
+        <th scope="col">Valor</th>
+        <th scope="col">
+          <button
+            title="Inserir Movimentação"
+            class="btn btn-dark"
+            *ngIf="isAdmin === '1'"
+            data-bs-toggle="modal"
+            data-bs-target="#insertMov"
+          >
+            <i class="fa-solid fa-circle-plus"></i>
+          </button>
+        </th>
+        <th scope="col">
+          <button
+            title="Inserir Movimentação"
+            class="btn btn-dark"
+            *ngIf="isAdmin === '3'"
+            data-bs-toggle="modal"
+            data-bs-target="#insertMovC"
+          >
+            <i class="fa-solid fa-circle-plus"></i>
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let mov of movimentacao.results; let i = index">
+        <td>{{ converterLongDate(mov.dataMov) }}</td>
+        <td>{{ converterCurrencyMov(mov.saldo, mov.tipoMov) }}</td>
+        <td>
+          <button
+            title="Editar Movimentação"
+            class="btn btn-dark text-white"
+            data-bs-toggle="modal"
+            data-bs-target="#editMov"
+            (click)="catchIndex(i); catchMovId(mov.cartaoConsumoMovId)"
+            *ngIf="isAdmin === '1'"
+          >
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+        </td>
+        <td>
+          <button
+            title="Deletar Movimentação"
+            class="btn btn-danger mx-3"
+            (click)="catchIndex(i); deleteMovById(mov.cartaoConsumoMovId)"
+            *ngIf="isAdmin === '1'"
+          >
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div
+  class="modal fade"
+  id="editModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar Cartão</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Nome</label>
+            <input
+              type="text"
+              #nomeEdit
+              value="{{ consumo.nome }}"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">CPF</label>
+            <input
+              type="text"
+              #cpfEdit
+              value="{{ consumo.cpf }}"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Número</label>
+            <input
+              type="text"
+              #numeroEdit
+              min="0"
+              value="{{ consumo.numero }}"
+              class="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Descrição</label
+            >
+            <input
+              type="text"
+              #descEdit
+              value="{{ consumo.descricao }}"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Validade</label
+            >
+            <input
+              type="text"
+              #validadeEdit
+              value="{{ consumo.validade }}"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Porcentagem de Desconto</label
+            >
+            <input
+              type="number"
+              #descontoEdit
+              min="0"
+              value="{{ consumo.desconto }}"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Número do Restaurante</label
+            >
+            <input
+              type="number"
+              #restauranteEdit
+              min="0"
+              value="{{ consumo.restauranteId }}"
+              class="form-control"
+              id="exampleInputPassword1"
+              disabled
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button
+          type="button"
+          (click)="
+            EditById(
+              consumo.cartaoConsumoId,
+              numeroEdit.value,
+              descEdit.value,
+              consumo.valor,
+              validadeEdit.value,
+              cpfEdit.value,
+              descontoEdit.value,
+              nomeEdit.value,
+              restauranteEdit.value,
+              consumo.saldoAtual
+            )
+          "
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+        >
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="editModalC"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar Cartão</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Nome</label>
+            <input
+              type="text"
+              #nomeEditC
+              value="{{ consumo.nome }}"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">CPF</label>
+            <input
+              type="text"
+              #cpfEditC
+              value="{{ consumo.cpf }}"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Número</label>
+            <input
+              type="text"
+              #numeroEditC
+              min="0"
+              value="{{ consumo.numero }}"
+              class="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Descrição</label
+            >
+            <input
+              type="text"
+              #descEditC
+              value="{{ consumo.descricao }}"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Validade</label
+            >
+            <input
+              type="text"
+              #validadeEditC
+              value="{{ consumo.validade }}"
+              class="form-control"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Porcentagem de Desconto</label
+            >
+            <input
+              type="number"
+              #descontoEditC
+              min="0"
+              value="{{ consumo.desconto }}"
+              class="form-control"
+              id="exampleInputPassword1"
+              disabled
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label"
+              >Número do Restaurante</label
+            >
+            <input
+              type="number"
+              #restauranteEditC
+              min="0"
+              value="{{ consumo.restauranteId }}"
+              class="form-control"
+              id="exampleInputPassword1"
+              disabled
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button
+          type="button"
+          (click)="
+            EditById(
+              consumo.cartaoConsumoId,
+              numeroEditC.value,
+              descEditC.value,
+              consumo.valor,
+              validadeEditC.value,
+              cpfEditC.value,
+              descontoEditC.value,
+              nomeEditC.value,
+              restauranteEditC.value,
+              consumo.saldoAtual
+            )
+          "
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+        >
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="editMov"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar Movimentação</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Valor</label>
+            <input
+              type="number"
+              min="0"
+              #saldo
+              class="form-control"
+              placeholder="Ex: 00.00"
+              id="exampleInputPassword1"
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button
+          type="button"
+          (click)="EditMovById(saldo.value)"
+          class="btn btn-primary"
+        >
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="insertMov"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar Movimentação</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Valor</label>
+            <input
+              type="number"
+              min="0"
+              #saldo2
+              class="form-control"
+              placeholder="Ex: 00.00"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Tipo</label>
+            <select class="form-control" name="tipo2" #tipo2 id="tipo">
+              <option value="1">Positivo</option>
+              <option value="2">Negativo</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button
+          type="button"
+          (click)="getTxtInfoMov(saldo2.value, tipo2.value)"
+          class="btn btn-primary"
+        >
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="insertMovC"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Inserir Carga</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Valor</label>
+            <input
+              type="number"
+              min="0"
+              #saldo3
+              class="form-control"
+              placeholder="Ex: 00.00"
+              id="exampleInputPassword1"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Tipo</label>
+            <select class="form-control" name="tipo3" #tipo3 id="tipo">
+              <option disabled value="1">Positivo</option>
+              <option value="2">Negativo</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button
+          type="button"
+          (click)="getTxtInfoMov(saldo3.value, tipo3.value)"
+          class="btn btn-primary"
+        >
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="bg-light text-center text-lg-start">
+  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+    © 2022 Powered by:
+    <a class="text-dark" href="https://www.zipsoftware.com.br/">ZiP Software</a>
+  </div>
+</footer>

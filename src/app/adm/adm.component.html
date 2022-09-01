@@ -1,0 +1,110 @@
+<nav
+  class="navbar navbar-light bg-primary"
+  style="border-bottom: 4px solid #0000; background-color: #efeeec !important"
+>
+  <div class="container-fluid">
+    <a href="#" class="navbar-brand">
+      <img
+        src="/assets/logo.png"
+        width="130"
+        height="160"
+        alt=""
+        class="d-inline-block align-middle mr-2"
+      />
+      <span class="text-uppercase font-weight-bold mx-4">Z-Park ADM</span>
+    </a>
+
+    <div class="d-flex">
+      <input
+        type="date"
+        style="width: 200px"
+        #dataInicial
+        class="form-control mx-2"
+        id="exampleInputEmail1"
+        aria-describedby="emailHelp"
+        value="{{ dataagora }}"
+        (change)="searchByDate(dataInicial.value)"
+      />
+      <button
+        title="Novo Veículo"
+        class="btn btn-dark mx-2"
+        (click)="gotoCadastro()"
+      >
+        <i class="fa-solid fa-circle-plus"></i>
+      </button>
+      <button
+        title="Imprimir"
+        class="btn btn-light mx-2"
+        (click)="printThisPage()"
+      >
+        <i class="fas fa-print"></i>
+      </button>
+      <button title="Sair" class="btn btn-danger mx-2" (click)="logout()">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<table class="table mt-3">
+  <thead>
+    <tr>
+      <th scope="col">Data</th>
+      <th scope="col">Modelo</th>
+      <th scope="col">Placa</th>
+      <th scope="col">Diárias</th>
+      <th scope="col">Pagamento</th>
+      <th scope="col">Valor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let es of estacionamento.results; let i = index">
+      <td>{{ converterLongDate(es.dataReg) }}</td>
+      <td>{{ es.modelo }}</td>
+      <td>{{ es.placa }}</td>
+      <td>{{ dateDiff(es.entrada, es.saida) }}</td>
+      <td>{{ tipoPagamento(es.metodo) }}</td>
+      <td>{{ converterCurrency(es.valorTotal) }}</td>
+    </tr>
+    <tr class="table-secondary">
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td><b>Total em Dinheiro:</b></td>
+      <td>{{ sumValoresDinheiro() }}</td>
+    </tr>
+    <tr class="table-secondary">
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td><b>Total em Cartão:</b></td>
+      <td>{{ sumValoresCartao() }}</td>
+    </tr>
+    <tr class="table-secondary">
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td><b>Total:</b></td>
+      <td>{{ sumTotal() }}</td>
+    </tr>
+    <tr class="table-secondary">
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>
+        <button
+          title="Fechar Caixa"
+          class="btn btn-dark mx-2"
+          (click)="fecharCaixa(dataInicial.value)"
+        >
+          <i class="fa-solid fa-cash-register"></i>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
