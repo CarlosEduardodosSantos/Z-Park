@@ -144,4 +144,11 @@ export class EstServiceService {
       cx
     ).toPromise();
   }
+
+  public updateVlEst(res: iRes) {
+    return this.HttpClient.put<iRes>(
+      `${environment.apiurl}api/Restaurante/alterarVlEst`,
+      res
+    ).toPromise();
+  }
 }

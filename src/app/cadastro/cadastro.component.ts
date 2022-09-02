@@ -191,14 +191,8 @@ export class CadastroComponent implements OnInit {
   }
 
   converterLongDate(data: any) {
-    let dataco = new Date(data).getUTCDate();
-    let seconds = new Date(data).getSeconds();
-    let min = new Date(data).getUTCMinutes();
-    let hora = new Date(data).getUTCHours();
-    let dia = new Date(data).getUTCDate();
-    let mes = new Date(data).getUTCMonth() + 1;
-    let ano = new Date(data).getFullYear();
-    return dia + '/' + mes + '/' + ano;
+    let dataFormatada = new Date(data).toLocaleDateString()
+    return  dataFormatada;
   }
 
   reload(){window.location.reload()}

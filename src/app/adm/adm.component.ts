@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EstServiceService } from '../est-service.service';
 import { iEst } from '../iEst';
+import { iRes } from '../iRes';
 import {
   Router,
   CanActivate,
@@ -8,6 +9,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { iCx1 } from '../iCx1';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-adm',
@@ -22,11 +24,20 @@ export class AdmComponent implements OnInit {
   item: any;
   totalDinheiro: any;
   totalCartao: any;
+  valorDiaria: any;
+  valorDiariaConvert: any = 0;
+  resp: any;
   dataagora = new Date().toISOString().substring(0, 10);
   estModel: iEst = new iEst();
   cx1Model: iCx1 = new iCx1();
+  resModel: iRes = new iRes();
 
   async ngOnInit() {
+    await this.est.obterResById().then((res) => {
+      this.restaurante = res;
+      this.valorDiaria = this.restaurante.valorEst;
+    this.valorDiariaConvert = this.converterCurrency(this.valorDiaria)
+    });
     await this.est.obterTudoAbertoPorDia(this.dataagora).then((es) => {
       this.estacionamento = es;
     });
@@ -50,14 +61,8 @@ export class AdmComponent implements OnInit {
   }
 
   converterLongDate(data: any) {
-    let dataco = new Date(data).getUTCDate();
-    let seconds = new Date(data).getSeconds();
-    let min = new Date(data).getUTCMinutes();
-    let hora = new Date(data).getUTCHours();
-    let dia = new Date(data).getUTCDate();
-    let mes = new Date(data).getUTCMonth() + 1;
-    let ano = new Date(data).getFullYear();
-    return dia + '/' + mes + '/' + ano;
+    let dataFormatada = new Date(data).toLocaleDateString()
+    return  dataFormatada;
   }
 
   converterCurrency(valor: number) {
@@ -123,4 +128,15 @@ export class AdmComponent implements OnInit {
   printThisPage() {
     window.print();
   }
+
+  async updateVlDiaria(_vlDiaria: any,) {
+    this.resModel = {restauranteId: environment.resId ,valorEst: _vlDiaria};
+    console.log(this.resModel)
+    await this.est.updateVlEst(this.resModel).then((resp) => {
+      this.resp = resp;
+      console.log(this.resp);
+      window.location.reload();
+  })
 }
+}
+

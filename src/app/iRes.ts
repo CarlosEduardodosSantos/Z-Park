@@ -1,5 +1,5 @@
 export class iRes {
-  public nome: any;
-  public allowvalorinit: any;
+  public restauranteId?: any
+  public nome?: any;
   public valorEst: any;
 }

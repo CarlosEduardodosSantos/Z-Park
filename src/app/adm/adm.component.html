@@ -1,9 +1,9 @@
-<nav
+<nav 
   class="navbar navbar-light bg-primary"
   style="border-bottom: 4px solid #0000; background-color: #efeeec !important"
 >
-  <div class="container-fluid">
-    <a href="#" class="navbar-brand">
+  <div class="container-fluid" >
+    <a href="#" class="navbar-brand" >
       <img
         src="/assets/logo.png"
         width="130"
@@ -14,18 +14,35 @@
       <span class="text-uppercase font-weight-bold mx-4">Z-Park ADM</span>
     </a>
 
-    <div class="d-flex">
+    <div class="d-flex" id="printText">
+      <label id="printPageButton">Valor Diária:</label>
+          <input
+          placeholder="{{ valorDiariaConvert }}"
+          style="width: 200px"
+            type="number"
+            class="form-control mx-2"
+            #vldiaria
+          />
+          <button
+          id="printPageButton"
+          title="Atualizar Vl Diária"
+          (click)="updateVlDiaria(vldiaria.value)"
+          class="btn btn-dark mx-2"
+         
+        >
+          <i class="fa fa-refresh"></i>
+        </button>
       <input
         type="date"
         style="width: 200px"
         #dataInicial
         class="form-control mx-2"
-        id="exampleInputEmail1"
         aria-describedby="emailHelp"
         value="{{ dataagora }}"
         (change)="searchByDate(dataInicial.value)"
       />
       <button
+      id="printPageButton"
         title="Novo Veículo"
         class="btn btn-dark mx-2"
         (click)="gotoCadastro()"
@@ -33,13 +50,14 @@
         <i class="fa-solid fa-circle-plus"></i>
       </button>
       <button
+      id="printPageButton"
         title="Imprimir"
         class="btn btn-light mx-2"
         (click)="printThisPage()"
       >
         <i class="fas fa-print"></i>
       </button>
-      <button title="Sair" class="btn btn-danger mx-2" (click)="logout()">
+      <button title="Sair" class="btn btn-danger mx-2" (click)="logout()" id="printPageButton">
         <i class="fa-solid fa-arrow-right-from-bracket"></i>
       </button>
     </div>
@@ -90,14 +108,15 @@
       <td><b>Total:</b></td>
       <td>{{ sumTotal() }}</td>
     </tr>
-    <tr class="table-secondary">
+    <tr id="printPageButton" class="table-secondary">
       <td></td>
       <td></td>
       <td></td>
       <td></td>
       <td></td>
-      <td>
+      <td >
         <button
+        id="printPageButton"
           title="Fechar Caixa"
           class="btn btn-dark mx-2"
           (click)="fecharCaixa(dataInicial.value)"
